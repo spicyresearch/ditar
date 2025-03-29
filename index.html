@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.88.1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="stylesheet" href="css/normalize.css">
+
+	<title>Seed-TTS</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+
+<body data-new-gr-c-s-check-loaded="14.1091.0" data-gr-ext-installed="">
+
+<div class="container" >
+<header role="banner">
+</header>
+<main role="main">
+<article itemscope itemtype="https://schema.org/BlogPosting">
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">
+	<div class="text-center">
+	<h2>DiTAR: </h2>
+      <h3>Diffusion Transformer Autoregressive Modeling for Speech Generation</h3>
+        <p class="fst-italic mb-0">
+         Anonymous 
+      <p></p>
+	</div>
+	<p><b>Abstract.</b> Several recent studies have attempted to autoregressively generate continuous speech representations without discrete speech tokens by combining diffusion and autoregressive models, yet they often face challenges with excessive computational loads or suboptimal outcomes.
+In this work, we propose Diffusion Transformer Autoregressive Modeling (DiTAR), a patch-based autoregressive framework combining a language model with a diffusion transformer. This approach significantly enhances the efficacy of autoregressive models for continuous tokens and reduces computational demands.
+DiTAR utilizes a divide-and-conquer strategy for patch generation, where the language model processes aggregated patch embeddings and the diffusion transformer subsequently generates the next patch based on the output of the language model.
+For inference, we propose defining temperature as the time point of introducing noise during the reverse diffusion ODE to balance diversity and determinism. We also show in the extensive scaling analysis that DiTAR has superb scalability. In zero-shot speech generation, DiTAR achieves state-of-the-art performance in robustness, speaker similarity, and naturalness.
+	</p>
+
+	<p>
+	<b>Contents</b>
+      <ul>
+        <li><a href="#model-overview">System Overview</a></li>
+        <li><a href="#comparison">Comparison with existing autoregreesive diffusion works</a></li>
+        <li><a href="#librispeech-samples">Audio samples on LibriSpeech test-clean</a></li>
+        <li><a href="#hard-cases">Audio samples with hard prompts</a></li>
+      </ul>
+	</p>
+
+	
+</div>
+
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">		
+	<h2 id="model-overview" style="text-align: center;">System Overview</h2>
+	<body>
+	<p style="text-align: center;">
+		<img src="pics/framework.png" height="800" width="800">
+	</p>
+	</body>
+		<p style="text-align: center;" >
+			<b>Figure 1.</b> DiTAR is composed of an aggregation encoder for input, a causal language model backbone, and a diffusion decoder, LocDiT, predicting local patches of tokens. 
+		</p>
+</div>
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">		
+	<h2 id="comparison" style="text-align: center;">Comparison with other works on autoregressive diffusion</h2>
+	<body>
+	<p style="text-align: center;">
+		<img src="pics/arch.png" height="1200" width="800">
+	</p>
+	</body>
+		<p style="text-align: center;" >
+			<b>Figure 2.</b> Different systems have varying design philosophies. MAR and DiTAR offload the computation of diffusion to the diffusion head, while ARDiT applies diffusion throughout the entire model. DiTAR structurally resembles a causal language model and becomes a continuous-valued LLM when scaled.
+		</p>
+		<p style="text-align: left;" >
+			[1] Li, Tianhong, et al. "Autoregressive image generation without vector quantization." Advances in Neural Information Processing Systems 37 (2024): 56424-56445.
+		</p>
+		<p style="text-align: left;" >
+			[2] Fan, Lijie, et al. "Fluid: Scaling autoregressive text-to-image generative models with continuous tokens." arXiv preprint arXiv:2410.13863 (2024).
+		</p>
+		<p style="text-align: left;" >
+			[3] Liu, Zhijun, et al. "Autoregressive diffusion transformer for text-to-speech synthesis." arXiv preprint arXiv:2406.05551 (2024).
+		</p>
+</div>
+
+
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">
+	<h2 id="librispeech-samples" style="text-align: center;">Audio samples on LibriSpeech test-clean</h2>
+		<div class="table-responsive pt-3">
+			<table class="table table-hover pt-2">
+				<thead>
+				<tr>
+				<th style="vertical-align : middle;text-align: center">Prompt </th>
+				<th style="vertical-align : middle;text-align: center">Ground truth</th>
+				<th style="vertical-align : middle;text-align: center">E2TTS</th>
+				<th style="vertical-align : middle;text-align: center">F5TTS</th>
+				<th style="vertical-align : middle;text-align: center">DiTAR</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/1.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/1.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/1.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/1.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/1.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/2.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/2.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/2.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/2.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/2.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/3.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/3.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/3.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/3.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/3.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/4.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/4.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/4.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/4.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/4.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/5.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/5.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/5.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/5.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/5.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/6.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/6.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/6.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/6.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/6.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/7.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/7.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/7.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/7.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/7.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/8.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/8.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/8.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/8.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/8.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/9.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/9.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/9.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/9.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/9.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/prompt/10.flac" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/GT/10.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/E2/10.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/F5/10.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/librispeech/ditar/10.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+</div>
+
+
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">
+	<h2 id="hard-cases" style="text-align: center;">Audio samples with hard prompts</h2>
+	<br>
+	<h4 id="full-diffusion-tts-samples" style="text-align: center;">Zero-shot TTS</h4>
+	<br>
+		<div class="table-responsive pt-3">
+			<table class="table table-hover pt-2">
+				<thead>
+				<tr>
+				<th style="text-align: center">Prompt</th>
+				<th style="text-align: center">Generated audios by DiTAR</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/bible.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/bible.wav" autoplay/>Your browser does not support the audio element.</audio><br>Lastly, drizzle some high-quality balsamic glaze over the dish, adding a piquant twist to balance the rich and hearty flavors. Whether you are a food enthusiast or a novice cook, this dish never fails to impress. Enjoy your meal!
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/goldenmonkey.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/goldenmonkey.wav" autoplay/>Your browser does not support the audio element.</audio><br>Continual advancements in engineering and construction techniques will maximize durability while still promoting eco-consciousness. As we move forward, we aim to incorporate more green technologies, transforming the way we build and defining the future of sustainable architecture.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/迪士尼公主.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/迪士尼公主.wav" autoplay/>Your browser does not support the audio element.</audio><br>So, I keep reaching out, keep believing, undeterred by the obstacles. Sure, the journey's challenging, but I've learned that persistence pays. After all, even the grandest castle starts with a single stone, right?
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/纪录片男声.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/纪录片男声.wav" autoplay/>Your browser does not support the audio element.</audio><br>I don't really care what you call me. I've been a silent spectator, watching species evolve, empires rise and fall. But always remember, I am mighty and enduring. Respect me and I'll nurture you; ignore me and you shall face the consequences.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/憨憨小子.wav" autoplay/>Your browser does not support the audio element.</audio>
+						</td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/憨憨小子.wav" autoplay/>Your browser does not support the audio element.</audio><br>Despite their confused looks, I let out a hearty laugh. "Trust me to bring some lightness to the heaviest subjects, won't you?" I see them shake their heads, their eyes glittering with amusement. Ah, life is nothing without a little humor!
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/拉美口音女.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/拉美口音女.wav" autoplay/>Your browser does not support the audio element.</audio><br>Their eyes softened with understanding. "I can't promise perfection," I tell them, my eyes pleading for patience, "but I can promise effort. And perhaps, over time, my foreign words will start to sound a little more like home to your ears."
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/暴躁企鹅.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/暴躁企鹅.wav" autoplay/>Your browser does not support the audio element.</audio><br>Perhaps they are driven by the delicious blend of flavors, or it could be the appealing visual presentation. At the end of the day, our choices in food reflect our personal preferences and sometimes, even our lifestyle or belief system.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/电音小猫.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/电音小猫.wav" autoplay/>Your browser does not support the audio element.</audio><br>The combinations of different textures and flavors create a perfect harmony. The succulence of the steak, the tartness of the cranberries, the crunch of pine nuts, and creaminess of blue cheese make it a truly delectable delight. Enjoy your culinary adventure!
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/游戏解说男.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/游戏解说男.wav" autoplay/>Your browser does not support the audio element.</audio><br>There it is! A massive shockwave from Orianna! The crowd goes wild as the team secures dragon and extends their lead. Exceptional play, keeping us on the edge of our seats!
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/美妆博主男.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/美妆博主男.wav" autoplay/>Your browser does not support the audio element.</audio><br>We've carefully curated these products, considering various skin types and individual needs. So, whether you're a skincare newbie or a seasoned veteran, there's something for everyone. Let's dive right in and explore these beauty gems together!
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/严肃愤怒女.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/严肃愤怒女.wav" autoplay/>Your browser does not support the audio element.</audio><br>Okay, let's take a step back and breathe. I understand we may not see eye to eye on this, but that's the beauty of dialogue. We can agree to disagree and still maintain a respectful conversation. Please remember: everyone's allowed their opinion.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/愤怒女.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/愤怒女.wav" autoplay/>Your browser does not support the audio element.</audio><br>Wow, sounds like there are a lot of unresolved issues here. Let's try to remember that communication is key. If we can't be honest with each other, we're never going to solve our problems. Time to face the music and talk things through.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/悲伤女.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/悲伤女.wav" autoplay/>Your browser does not support the audio element.</audio><br>Dealing with family secrets is never easy. Yet, sometimes, omission is a form of protection, intending to safeguard some from the harsh truths. One day, I hope you understand the reasons behind my actions. Until then, Anna, please, bear with me.
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/prompt/恐惧害怕女.wav" autoplay/>Your browser does not support the audio element.</audio></td>
+						<td style="vertical-align : middle;text-align:center;"><audio controls="controls" style="width: 190px;"><source src="audios/hard_cases/ditar/恐惧害怕女.wav" autoplay/>Your browser does not support the audio element.</audio><br>Your safety and the pack's reputation are at stake. Your bravery is admirable, but sometimes bravery is knowing when to retreat. Please, consider returning with me. We can work out a plan, but only if you're willing to listen.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	<br>
+</div>
+
+
+
+</div>
+
+
+
+</article>
+</main>
+</div>
+
+</body>
+</html>
